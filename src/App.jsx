@@ -1,4 +1,5 @@
-import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+import { useEffect } from "react";
+import { BrowserRouter, Navigate, Route, Routes, useLocation } from "react-router-dom";
 import Auth from "./pages/Auth.jsx";
 import Home from "./pages/Home.jsx";
 import Room from "./pages/Room.jsx";
@@ -18,9 +19,20 @@ function ProtectedRoute({ children }) {
   return user ? children : <Navigate to="/auth" replace />;
 }
 
+function ScrollToTop() {
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+  }, [pathname]);
+
+  return null;
+}
+
 export default function App() {
   return (
     <BrowserRouter>
+      <ScrollToTop />
       <Routes>
         <Route path="/auth" element={<Auth />} />
         <Route

@@ -21,30 +21,37 @@ function loadYouTubeApi() {
   return apiReadyPromise;
 }
 
-export function useYouTubePlayer({ videoId, onPlay, onPause, onEnded, onReady }) {
-  const containerRef = useRef(null);
+export function useYouTubePlayer({ onPlay, onPause, onEnded, onReady }) {
+  const [containerElement, setContainerElement] = useState(null);
   const playerRef = useRef(null);
   const callbacksRef = useRef({ onPlay, onPause, onEnded, onReady });
   const [ready, setReady] = useState(false);
+  const containerRef = useCallback((node) => {
+    setContainerElement(node);
+  }, []);
 
   useEffect(() => {
     callbacksRef.current = { onPlay, onPause, onEnded, onReady };
   }, [onPlay, onPause, onEnded, onReady]);
 
   useEffect(() => {
+    if (!containerElement) return;
     let cancelled = false;
 
     loadYouTubeApi().then((YT) => {
-      if (cancelled || !containerRef.current) return;
+      if (cancelled || !containerElement) return;
 
-      playerRef.current = new YT.Player(containerRef.current, {
+      playerRef.current = new YT.Player(containerElement, {
         width: "100%",
         height: "100%",
-        videoId: videoId || "",
+        videoId: "",
         playerVars: {
           autoplay: 0,
-          controls: 1,
+          controls: 0,
+          disablekb: 1,
+          enablejsapi: 1,
           modestbranding: 1,
+          origin: window.location.origin,
           rel: 0,
           playsinline: 1
         },
@@ -68,18 +75,20 @@ export function useYouTubePlayer({ videoId, onPlay, onPause, onEnded, onReady })
       playerRef.current = null;
       setReady(false);
     };
-  }, []);
-
-  useEffect(() => {
-    if (!ready || !videoId || !playerRef.current?.loadVideoById) return;
-    playerRef.current.loadVideoById(videoId);
-  }, [ready, videoId]);
+  }, [containerElement]);
 
   const controls = {
+    load: useCallback((nextVideoId, seconds = 0, autoplay = false) => {
+      if (!nextVideoId || !playerRef.current) return;
+      const payload = { videoId: nextVideoId, startSeconds: Math.max(0, Number(seconds) || 0) };
+      if (autoplay) playerRef.current.loadVideoById?.(payload);
+      else playerRef.current.cueVideoById?.(payload);
+    }, []),
     play: useCallback(() => playerRef.current?.playVideo?.(), []),
     pause: useCallback(() => playerRef.current?.pauseVideo?.(), []),
     seekTo: useCallback((seconds) => playerRef.current?.seekTo?.(seconds, true), []),
     getCurrentTime: useCallback(() => playerRef.current?.getCurrentTime?.() || 0, []),
+    getDuration: useCallback(() => playerRef.current?.getDuration?.() || 0, []),
     getState: useCallback(() => playerRef.current?.getPlayerState?.(), [])
   };
 

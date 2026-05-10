@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import Button from "../components/Button.jsx";
 import ThemeToggle from "../components/ThemeToggle.jsx";
 import { useAuth } from "../context/AuthContext.jsx";
+import { getBackendConfigMessage } from "../lib/config.js";
 import { createRoom } from "../lib/api.js";
 import { logout } from "../lib/firebase.js";
 import { getReadableFirebaseError } from "../utils/firebaseErrors.js";
@@ -23,7 +24,7 @@ export default function Home() {
       const { data } = await createRoom();
       navigate(`/room/${data.room.code}`);
     } catch (error) {
-      toast.error(error.response?.data?.message || getReadableFirebaseError(error, "Could not create room."));
+      toast.error(error.response?.data?.message || getReadableFirebaseError(error, getBackendConfigMessage()));
     } finally {
       setBusy(false);
     }
