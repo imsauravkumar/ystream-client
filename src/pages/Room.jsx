@@ -100,16 +100,17 @@ export default function Room() {
   }, [roomCode, profile.uid]);
 
   useEffect(() => {
-    if (!socket || !canControlPlayback) return;
+    if (!socket || !isHost) return;
     const interval = window.setInterval(() => {
+      const timestamp = playerRef.current?.getCurrentTime?.();
       socket.emit("sync-state", {
         roomCode,
-        timestamp: playerRef.current?.getCurrentTime?.() || playback.timestamp,
+        timestamp: Number.isFinite(Number(timestamp)) ? timestamp : playback.timestamp,
         isPlaying: playback.isPlaying
       });
-    }, 4000);
+    }, 5000);
     return () => window.clearInterval(interval);
-  }, [socket, canControlPlayback, roomCode, playback.isPlaying, playback.timestamp]);
+  }, [socket, isHost, roomCode, playback.isPlaying, playback.timestamp]);
 
   useEffect(() => {
     function confirmBeforeUnload(event) {

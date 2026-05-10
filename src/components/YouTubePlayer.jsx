@@ -1,4 +1,4 @@
-import { Pause, Play, RotateCcw, SkipBack, SkipForward } from "lucide-react";
+import { Pause, Play, RotateCcw, SkipBack, SkipForward, Volume2, VolumeX } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import Button from "./Button.jsx";
 import { useYouTubePlayer } from "../hooks/useYouTubePlayer.js";
@@ -17,6 +17,7 @@ export default function YouTubePlayer({ currentVideo, playback, canControl, canA
   const loadedVideoIdRef = useRef(null);
   const [progress, setProgress] = useState(0);
   const [duration, setDuration] = useState(0);
+  const [muted, setMuted] = useState(false);
   const player = useYouTubePlayer({
     onReady: onPlayerReady,
     onPlay: () => {
@@ -62,6 +63,16 @@ export default function YouTubePlayer({ currentVideo, playback, canControl, canA
     onLocalEvent("seek-video", { timestamp: nextTimestamp });
   }
 
+  function toggleMute() {
+    if (muted) {
+      player.unMute();
+      setMuted(false);
+    } else {
+      player.mute();
+      setMuted(true);
+    }
+  }
+
   useEffect(() => {
     if (currentVideo) return;
     loadedVideoIdRef.current = null;
@@ -101,6 +112,8 @@ export default function YouTubePlayer({ currentVideo, playback, canControl, canA
     const expected = playback.isPlaying ? playback.timestamp + Math.max(age, 0) : playback.timestamp;
     const current = player.getCurrentTime();
     const drift = Math.abs(current - expected);
+    const playerState = player.getState();
+    const isPlayingOrBuffering = playerState === 1 || playerState === 3;
 
     remoteActionRef.current = true;
     if (loadedVideoIdRef.current !== currentVideo.videoId) {
@@ -108,9 +121,9 @@ export default function YouTubePlayer({ currentVideo, playback, canControl, canA
       setProgress(expected);
       player.load(currentVideo.videoId, expected, playback.isPlaying);
     } else {
-      if (drift > 1.25) player.seekTo(expected);
-      if (playback.isPlaying) player.play();
-      else player.pause();
+      if (drift > 2.5) player.seekTo(expected);
+      if (playback.isPlaying && !isPlayingOrBuffering) player.play();
+      if (!playback.isPlaying && playerState !== 2) player.pause();
     }
     window.setTimeout(() => {
       remoteActionRef.current = false;
@@ -123,10 +136,11 @@ export default function YouTubePlayer({ currentVideo, playback, canControl, canA
     const interval = window.setInterval(() => {
       setProgress(player.getCurrentTime());
       setDuration(player.getDuration());
+      setMuted(player.isMuted());
     }, 500);
 
     return () => window.clearInterval(interval);
-  }, [player.ready, currentVideo?.videoId, player.getCurrentTime, player.getDuration]);
+  }, [player.ready, currentVideo?.videoId, player.getCurrentTime, player.getDuration, player.isMuted]);
 
   if (!currentVideo) {
     return (
@@ -155,6 +169,9 @@ export default function YouTubePlayer({ currentVideo, playback, canControl, canA
           </div>
 
           <div className="flex flex-wrap items-center justify-center gap-2">
+            <Button className="h-11 w-11 px-0" variant="ghost" onClick={toggleMute} title={muted ? "Unmute" : "Mute"}>
+              {muted ? <VolumeX size={18} /> : <Volume2 size={18} />}
+            </Button>
             <Button className="h-11 w-11 px-0" variant="ghost" disabled={!canControl} onClick={() => seekToTimestamp(0)} title="Restart">
               <RotateCcw size={18} />
             </Button>
