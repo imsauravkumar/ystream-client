@@ -4,6 +4,13 @@ function stripTrailingSlash(value) {
   return String(value || "").trim().replace(/\/+$/, "");
 }
 
+function normalizeUrl(value) {
+  const url = stripTrailingSlash(value);
+  if (!url) return "";
+  if (/^https?:\/\//i.test(url)) return url;
+  return `https://${url}`;
+}
+
 function isLocalUrl(value) {
   return /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/i.test(value);
 }
@@ -13,7 +20,7 @@ function isLocalBrowser() {
 }
 
 export function getBackendUrl() {
-  const configuredUrl = stripTrailingSlash(import.meta.env.VITE_API_URL || import.meta.env.VITE_SOCKET_URL);
+  const configuredUrl = normalizeUrl(import.meta.env.VITE_API_URL || import.meta.env.VITE_SOCKET_URL);
 
   if (configuredUrl && (!import.meta.env.PROD || !isLocalUrl(configuredUrl) || isLocalBrowser())) {
     return configuredUrl;
@@ -28,7 +35,7 @@ export function getBackendUrl() {
 }
 
 export function getBackendConfigMessage() {
-  const configuredUrl = stripTrailingSlash(import.meta.env.VITE_API_URL || import.meta.env.VITE_SOCKET_URL);
+  const configuredUrl = normalizeUrl(import.meta.env.VITE_API_URL || import.meta.env.VITE_SOCKET_URL);
   if (import.meta.env.PROD && configuredUrl && isLocalUrl(configuredUrl) && !isLocalBrowser()) {
     return "Vercel is still using localhost for the backend. Set VITE_API_URL and VITE_SOCKET_URL to your Railway backend URL, then redeploy.";
   }
