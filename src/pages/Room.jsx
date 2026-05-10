@@ -252,27 +252,28 @@ export default function Room() {
   return (
     <main className="min-h-screen bg-ink px-3 py-4 text-zinc-50 sm:px-4 lg:px-6">
       <div className="mx-auto flex w-full max-w-[92rem] flex-col gap-4">
-        <header className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-zinc-800/80 bg-panel/90 px-4 py-3 shadow-glow backdrop-blur">
-          <div className="flex min-w-0 items-center gap-3">
-            <div className="grid h-11 w-11 shrink-0 place-items-center rounded-lg bg-brand font-black text-zinc-950">Y</div>
+        <header className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3 rounded-xl border border-zinc-800/80 bg-panel/90 px-3 py-3 shadow-glow backdrop-blur sm:px-4">
+          <div className="flex min-w-0 items-center gap-2 sm:gap-3">
+            <div className="grid h-10 w-10 shrink-0 place-items-center rounded-lg bg-brand font-black text-zinc-950 sm:h-11 sm:w-11">Y</div>
             <div className="min-w-0">
-              <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
-                <h1 className="text-xl font-black leading-tight">Ystream</h1>
-                <span className="rounded-full border border-zinc-800 bg-zinc-950 px-2.5 py-1 text-xs font-bold tracking-[0.18em] text-zinc-200">
+              <div className="flex min-w-0 items-center gap-2">
+                <h1 className="shrink-0 text-lg font-black leading-tight sm:text-xl">Ystream</h1>
+                <span className="truncate rounded-full border border-zinc-800 bg-zinc-950 px-2 py-1 text-[0.65rem] font-bold tracking-[0.14em] text-zinc-200 sm:px-2.5 sm:text-xs sm:tracking-[0.18em]">
                   {room?.code || roomCode}
                 </span>
               </div>
-              <p className="mt-1 flex items-center gap-2 text-sm text-muted">
+              <p className="mt-1 flex items-center gap-1.5 text-xs text-muted sm:gap-2 sm:text-sm">
                 {connected ? <Wifi size={15} className="text-brand" /> : <WifiOff size={15} className="text-red-400" />}
                 {connected ? "Live sync connected" : "Reconnecting"}
               </p>
             </div>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex shrink-0 items-center gap-2">
             <ThemeToggle />
-            <Button variant="ghost" onClick={leaveRoom}>
-              <LogOut size={18} /> Leave
+            <Button className="h-10 min-h-10 px-3 sm:h-11 sm:px-4" variant="ghost" onClick={leaveRoom}>
+              <LogOut size={18} />
+              <span className="hidden sm:inline">Leave</span>
             </Button>
           </div>
         </header>

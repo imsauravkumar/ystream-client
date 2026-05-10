@@ -17,14 +17,29 @@ export default function Sidebar({
   onUpdatePlaybackPermission
 }) {
   const [message, setMessage] = useState("");
+  const [unreadCount, setUnreadCount] = useState(0);
   const messagesRef = useRef(null);
   const endRef = useRef(null);
 
   useEffect(() => {
     const messagesElement = messagesRef.current;
     if (!messagesElement) return;
-    messagesElement.scrollTop = messagesElement.scrollHeight;
+    const distanceFromBottom = messagesElement.scrollHeight - messagesElement.scrollTop - messagesElement.clientHeight;
+    if (distanceFromBottom < 80) {
+      messagesElement.scrollTop = messagesElement.scrollHeight;
+      setUnreadCount(0);
+    } else {
+      const latestMessage = messages[messages.length - 1];
+      if (latestMessage?.user?.uid !== currentUserUid) setUnreadCount((count) => Math.min(count + 1, 99));
+    }
   }, [messages.length]);
+
+  function handleMessagesScroll() {
+    const messagesElement = messagesRef.current;
+    if (!messagesElement) return;
+    const distanceFromBottom = messagesElement.scrollHeight - messagesElement.scrollTop - messagesElement.clientHeight;
+    if (distanceFromBottom < 80) setUnreadCount(0);
+  }
 
   function send(event) {
     event.preventDefault();
@@ -123,9 +138,12 @@ export default function Sidebar({
       </section>
 
       <section className="grid min-h-[28rem] grid-rows-[auto_1fr_auto_auto] rounded-xl border border-zinc-800 bg-panel/90 p-4">
-        <h3 className="mb-3 font-black">Chat</h3>
+        <div className="mb-3 flex items-center justify-between gap-3">
+          <h3 className="font-black">Chat</h3>
+          {unreadCount > 0 && <span className="rounded-full bg-brand/10 px-2.5 py-1 text-xs font-bold text-brand">{unreadCount} new</span>}
+        </div>
 
-        <div ref={messagesRef} className="scrollbar-soft min-h-0 space-y-3 overflow-auto pr-1">
+        <div ref={messagesRef} className="scrollbar-soft min-h-0 space-y-3 overflow-auto pr-1" onScroll={handleMessagesScroll}>
           {messages.map((item) => (
             <div key={item.id} className="flex gap-2">
               <Avatar user={item.user} size="sm" />
