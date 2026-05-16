@@ -11,42 +11,27 @@ function formatTime(seconds) {
 }
 
 export default function YouTubePlayer({ currentVideo, playback, canControl, canAutoAdvance, onLocalEvent, onPrevious, onNext, onPlayerReady }) {
-  const remoteActionRef = useRef(false);
-  const leavingPageRef = useRef(false);
-  const lastBroadcastRef = useRef(0);
   const loadedVideoIdRef = useRef(null);
   const [progress, setProgress] = useState(0);
   const [duration, setDuration] = useState(0);
   const [muted, setMuted] = useState(false);
   const player = useYouTubePlayer({
     onReady: onPlayerReady,
-    onPlay: () => {
-      if (remoteActionRef.current) return;
-      const now = Date.now();
-      if (now - lastBroadcastRef.current < 800) return;
-      lastBroadcastRef.current = now;
-      onLocalEvent("play-video", { timestamp: player.getCurrentTime() });
-    },
-    onPause: () => {
-      if (leavingPageRef.current || document.visibilityState === "hidden") return;
-      if (remoteActionRef.current) return;
-      const now = Date.now();
-      if (now - lastBroadcastRef.current < 800) return;
-      lastBroadcastRef.current = now;
-      onLocalEvent("pause-video", { timestamp: player.getCurrentTime() });
-    },
+    onPlay: () => {},
+    onPause: () => {},
     onEnded: () => {
       if (canAutoAdvance) onNext();
     }
   });
 
   function playFromButton() {
+    if (!canControl) return;
     player.play();
     onLocalEvent("play-video", { timestamp: player.getCurrentTime() });
   }
 
   function pauseFromButton() {
-    lastBroadcastRef.current = Date.now();
+    if (!canControl) return;
     player.pause();
     onLocalEvent("pause-video", { timestamp: player.getCurrentTime() });
   }
@@ -57,6 +42,7 @@ export default function YouTubePlayer({ currentVideo, playback, canControl, canA
   }
 
   function seekToTimestamp(timestamp) {
+    if (!canControl) return;
     const nextTimestamp = Math.min(Math.max(Number(timestamp) || 0, 0), duration || Number(timestamp) || 0);
     setProgress(nextTimestamp);
     player.seekTo(nextTimestamp);
@@ -81,31 +67,6 @@ export default function YouTubePlayer({ currentVideo, playback, canControl, canA
   }, [currentVideo]);
 
   useEffect(() => {
-    function markLeavingPage() {
-      leavingPageRef.current = true;
-    }
-
-    function handleVisibilityChange() {
-      if (document.visibilityState === "hidden") leavingPageRef.current = true;
-      else {
-        window.setTimeout(() => {
-          leavingPageRef.current = false;
-        }, 500);
-      }
-    }
-
-    window.addEventListener("beforeunload", markLeavingPage);
-    window.addEventListener("pagehide", markLeavingPage);
-    document.addEventListener("visibilitychange", handleVisibilityChange);
-
-    return () => {
-      window.removeEventListener("beforeunload", markLeavingPage);
-      window.removeEventListener("pagehide", markLeavingPage);
-      document.removeEventListener("visibilitychange", handleVisibilityChange);
-    };
-  }, []);
-
-  useEffect(() => {
     if (!player.ready || !playback || !currentVideo) return;
 
     const age = playback.updatedAt ? (Date.now() - new Date(playback.updatedAt).getTime()) / 1000 : 0;
@@ -115,7 +76,6 @@ export default function YouTubePlayer({ currentVideo, playback, canControl, canA
     const playerState = player.getState();
     const isPlayingOrBuffering = playerState === 1 || playerState === 3;
 
-    remoteActionRef.current = true;
     if (loadedVideoIdRef.current !== currentVideo.videoId) {
       loadedVideoIdRef.current = currentVideo.videoId;
       setProgress(expected);
@@ -125,9 +85,6 @@ export default function YouTubePlayer({ currentVideo, playback, canControl, canA
       if (playback.isPlaying && !isPlayingOrBuffering) player.play();
       if (!playback.isPlaying && playerState !== 2) player.pause();
     }
-    window.setTimeout(() => {
-      remoteActionRef.current = false;
-    }, 1500);
   }, [player.ready, playback?.timestamp, playback?.isPlaying, playback?.updatedAt, currentVideo?.videoId]);
 
   useEffect(() => {

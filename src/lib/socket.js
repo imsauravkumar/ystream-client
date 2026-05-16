@@ -6,10 +6,11 @@ export async function createSocket() {
   const token = await auth.currentUser?.getIdToken();
 
   return io(getBackendUrl(), {
-    transports: ["polling", "websocket"],
+    transports: ["websocket", "polling"],
     upgrade: true,
     auth: { token },
     reconnectionAttempts: 10,
-    reconnectionDelay: 700
+    reconnectionDelay: 700,
+    timeout: 15000
   });
 }
