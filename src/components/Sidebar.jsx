@@ -102,7 +102,7 @@ export default function Sidebar({
               {isHost && user.uid !== currentUserUid && (
                 <button
                   className={`shrink-0 rounded-lg px-2.5 py-2 text-xs font-bold transition ${
-                    hasPlaybackPermission(user) ? "bg-red-950/80 text-red-300 hover:bg-red-900" : "bg-zinc-800 text-zinc-200 hover:bg-zinc-700"
+                    hasPlaybackPermission(user) ? "bg-rose-950/80 text-rose-200 hover:bg-rose-900" : "bg-zinc-800 text-zinc-200 hover:bg-zinc-700"
                   }`}
                   onClick={() => onUpdatePlaybackPermission(user.uid, !hasPlaybackPermission(user))}
                   type="button"
@@ -128,7 +128,7 @@ export default function Sidebar({
               <img className="h-14 w-20 rounded-md object-cover" src={video.thumbnail} alt="" />
               <div className="min-w-0 flex-1">
                 <p className="line-clamp-2 text-sm font-bold leading-snug">{video.title}</p>
-                <button className="mt-1 text-xs font-bold text-red-400 transition hover:text-red-300" onClick={() => onRemoveFromQueue(index)}>
+                <button className="mt-1 text-xs font-bold text-rose-300 transition hover:text-rose-200" onClick={() => onRemoveFromQueue(index)}>
                   Remove
                 </button>
               </div>
@@ -174,7 +174,7 @@ export default function Sidebar({
             onBlur={() => onTyping(false)}
             onFocus={() => onTyping(Boolean(message.trim()))}
           />
-          <button className="grid h-11 w-11 place-items-center rounded-lg bg-brand text-zinc-950 hover:bg-green-400" type="submit" title="Send">
+          <button className="grid h-11 w-11 place-items-center rounded-lg bg-gradient-to-r from-sky-300 to-brand text-zinc-950 transition hover:from-sky-200 hover:to-sky-300" type="submit" title="Send">
             <Send size={18} />
           </button>
         </form>

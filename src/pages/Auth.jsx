@@ -2,6 +2,7 @@ import { Eye, EyeOff, LogIn, Mail, UserPlus, UserRound } from "lucide-react";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { Navigate, useNavigate } from "react-router-dom";
+import BrandMark from "../components/BrandMark.jsx";
 import Button from "../components/Button.jsx";
 import ThemeToggle from "../components/ThemeToggle.jsx";
 import { useAuth } from "../context/AuthContext.jsx";
@@ -66,23 +67,23 @@ export default function Auth() {
 
   return (
     <main className="min-h-screen bg-ink px-4 py-5 text-zinc-50 sm:px-6 lg:px-10">
-      <nav className="mx-auto flex max-w-6xl items-center justify-between">
-        <div className="flex items-center gap-3">
-          <div className="grid h-11 w-11 place-items-center rounded-xl bg-brand font-black text-zinc-950">Y</div>
-          <div>
-            <p className="text-xl font-black tracking-tight">Ystream</p>
-            <p className="text-xs text-muted">Sign in to start watching together</p>
+      <nav className="mx-auto grid max-w-6xl grid-cols-[minmax(0,1fr)_auto] items-center gap-2 rounded-xl border border-zinc-800/80 bg-panel/80 px-2.5 py-2.5 shadow-glow backdrop-blur sm:gap-3 sm:px-4 sm:py-3">
+        <div className="flex min-w-0 items-center gap-2.5 sm:gap-3">
+          <BrandMark className="h-10 w-10 shrink-0 sm:h-12 sm:w-12" />
+          <div className="min-w-0">
+            <p className="truncate text-xl font-black leading-6 tracking-normal sm:text-2xl sm:leading-7">Ystream</p>
+            <p className="truncate text-xs leading-4 text-muted sm:text-sm sm:leading-5">Sign in to start watching together</p>
           </div>
         </div>
         <ThemeToggle />
       </nav>
 
-      <section className="mx-auto grid min-h-[calc(100vh-6rem)] max-w-6xl items-center gap-8 py-10 lg:grid-cols-[1fr_27rem]">
-        <div className="space-y-6">
-          <h1 className="max-w-3xl text-5xl font-black leading-tight tracking-normal sm:text-6xl xl:text-7xl">
+      <section className="mx-auto grid min-h-[calc(100vh-6rem)] max-w-6xl items-center gap-6 py-8 lg:grid-cols-[minmax(0,1fr)_27rem] lg:gap-8">
+        <div className="space-y-4 text-center lg:text-left">
+          <h1 className="text-4xl font-black leading-tight tracking-normal sm:text-6xl xl:text-7xl">
             Ystream
           </h1>
-          <p className="max-w-2xl text-lg leading-8 text-zinc-300">
+          <p className="mx-auto max-w-2xl text-base leading-7 text-zinc-300 sm:text-lg sm:leading-8 lg:mx-0">
             Sign in once, then create private synchronized YouTube rooms, queue videos, chat, and control playback across devices.
           </p>
         </div>
@@ -90,14 +91,22 @@ export default function Auth() {
         <div className="rounded-xl border border-zinc-800 bg-panel p-4 shadow-glow sm:p-6">
           <div className="mb-5 grid grid-cols-2 gap-2 rounded-lg bg-zinc-950 p-1">
             <button
-              className={`h-10 rounded-md text-sm font-bold transition ${mode === "login" ? "bg-brand text-zinc-950" : "text-zinc-300 hover:bg-zinc-900"}`}
+              className={`h-10 rounded-md text-sm font-bold transition ${
+                mode === "login"
+                  ? "bg-gradient-to-r from-sky-300 to-brand text-zinc-950 shadow-[0_8px_22px_rgba(56,189,248,0.16)]"
+                  : "text-zinc-300 hover:bg-zinc-900 hover:text-white"
+              }`}
               onClick={() => setMode("login")}
               type="button"
             >
               Login
             </button>
             <button
-              className={`h-10 rounded-md text-sm font-bold transition ${mode === "signup" ? "bg-brand text-zinc-950" : "text-zinc-300 hover:bg-zinc-900"}`}
+              className={`h-10 rounded-md text-sm font-bold transition ${
+                mode === "signup"
+                  ? "bg-gradient-to-r from-sky-300 to-brand text-zinc-950 shadow-[0_8px_22px_rgba(56,189,248,0.16)]"
+                  : "text-zinc-300 hover:bg-zinc-900 hover:text-white"
+              }`}
               onClick={() => setMode("signup")}
               type="button"
             >

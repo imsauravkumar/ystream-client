@@ -35,7 +35,7 @@ export default function SearchPanel({ onAdd, hasCurrentVideo = false, adding = f
             onChange={(event) => setQuery(event.target.value)}
           />
         </div>
-        <Button className="sm:w-32" disabled={loading}>{loading ? "Searching" : "Search"}</Button>
+        <Button className="w-full sm:w-32" disabled={loading}>{loading ? "Searching" : "Search"}</Button>
       </form>
 
       <div className="mt-4 grid gap-3 sm:grid-cols-2 2xl:grid-cols-3">
