@@ -4,6 +4,7 @@ import toast from "react-hot-toast";
 import { Navigate, useNavigate } from "react-router-dom";
 import BrandMark from "../components/BrandMark.jsx";
 import Button from "../components/Button.jsx";
+import CopyrightBadge from "../components/CopyrightBadge.jsx";
 import ThemeToggle from "../components/ThemeToggle.jsx";
 import { useAuth } from "../context/AuthContext.jsx";
 import { loginWithEmail, registerWithEmail, signInWithGoogle } from "../lib/firebase.js";
@@ -169,6 +170,7 @@ export default function Auth() {
           </div>
         </div>
       </section>
+      <CopyrightBadge />
     </main>
   );
 }

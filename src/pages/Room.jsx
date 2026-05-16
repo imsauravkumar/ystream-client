@@ -5,6 +5,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import BrandMark from "../components/BrandMark.jsx";
 import Button from "../components/Button.jsx";
 import ConfirmDialog from "../components/ConfirmDialog.jsx";
+import CopyrightBadge from "../components/CopyrightBadge.jsx";
 import SearchPanel from "../components/SearchPanel.jsx";
 import Sidebar from "../components/Sidebar.jsx";
 import ThemeToggle from "../components/ThemeToggle.jsx";
@@ -323,6 +324,7 @@ export default function Room() {
           />
         </div>
       </div>
+      <CopyrightBadge />
       <ConfirmDialog
         open={leaveDialogOpen}
         title="Leave this room?"

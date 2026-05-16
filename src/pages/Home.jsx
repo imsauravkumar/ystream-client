@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import BrandMark from "../components/BrandMark.jsx";
 import Button from "../components/Button.jsx";
 import ConfirmDialog from "../components/ConfirmDialog.jsx";
+import CopyrightBadge from "../components/CopyrightBadge.jsx";
 import ThemeToggle from "../components/ThemeToggle.jsx";
 import { useAuth } from "../context/AuthContext.jsx";
 import { getBackendConfigMessage } from "../lib/config.js";
@@ -170,6 +171,7 @@ export default function Home() {
           </div>
         </div>
       </section>
+      <CopyrightBadge />
       <ConfirmDialog
         open={signOutDialogOpen}
         title="Sign out?"

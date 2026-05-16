@@ -5,7 +5,7 @@ export default function ConfirmDialog({ open, title, message, confirmLabel = "Co
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-50 grid place-items-center bg-black/70 px-4 backdrop-blur-sm" role="dialog" aria-modal="true" aria-labelledby="confirm-title">
+    <div className="fixed inset-0 z-50 grid place-items-center overflow-y-auto bg-black/70 px-4 py-4 backdrop-blur-sm" role="dialog" aria-modal="true" aria-labelledby="confirm-title">
       <div className="w-full max-w-sm rounded-xl border border-zinc-800 bg-panel p-4 shadow-glow sm:p-5">
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">

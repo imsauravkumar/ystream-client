@@ -11,7 +11,7 @@ export default function ThemeToggle() {
 
   return (
     <button
-      className="grid h-11 w-11 place-items-center rounded-lg border border-zinc-800 bg-zinc-900 text-zinc-100 transition hover:bg-zinc-800"
+      className="grid h-11 w-11 shrink-0 place-items-center rounded-lg border border-zinc-800 bg-zinc-900 text-zinc-100 transition hover:bg-zinc-800"
       onClick={() => setLight((value) => !value)}
       title="Toggle theme"
       type="button"
